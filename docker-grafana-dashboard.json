@@ -155,7 +155,7 @@
           },
           "targets": [
             {
-              "expr": "(node_memory_MemTotal{instance=~'$node'} - node_memory_MemFree{instance=~'$node'}+node_memory_Buffers{instance=~'$node'}+node_memory_Cached{instance=~'$node'})/ node_memory_MemTotal{instance=~'$node'} * 100",
+              "expr": "(node_memory_MemTotal{instance=~'$node'} - (node_memory_MemFree{instance=~'$node'}+node_memory_Buffers{instance=~'$node'}+node_memory_Cached{instance=~'$node'}))/ node_memory_MemTotal{instance=~'$node'} * 100",
               "interval": "10s",
               "intervalFactor": 1,
               "refId": "A",
