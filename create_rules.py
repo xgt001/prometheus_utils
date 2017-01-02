@@ -1,3 +1,11 @@
+'''
+Simple script to generate container alive Promethues alert rules for containers running on ECS.
+
+For optimum usage: set query staleness delta to 1m in Prometheus. Beware of the side effects.
+
+(c) Ganesh Hegde
+MIT License
+'''
 import requests
 import os
 
@@ -38,8 +46,7 @@ def generate_rules():
         alert_name = alert_name.replace('-', '_')  # Prometheus doesn't like '-' in alert
         alert = '''
         ALERT %s_alive_check
-        IF absent(container_last_seen{container_label_com_amazonaws_ecs_container_name="%s"})
-        FOR 5m
+        IF time() - container_last_seen{container_label_com_amazonaws_ecs_container_name="%s"} > 480
         LABELS { severity = "page" }
         ANNOTATIONS {
             summary = "Container {{ $labels.image }} stopped",
@@ -53,8 +60,7 @@ def generate_rules():
         alert_name = alert_name.replace('-', '_')  # Prometheus doesn't like '-' in alert
         alert = '''
         ALERT %s_alive_check
-        IF absent(container_last_seen{name="%s",instance="%s"})
-        FOR 5m
+        IF time() - container_last_seen{name="%s", instance="%s"} > 480
         LABELS { severity = "page" }
         ANNOTATIONS {
             summary = "Container {{ $labels.image }} stopped",
